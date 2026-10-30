@@ -64,7 +64,7 @@ describe('location', { retries: 2, timeout: 120_000 }, () => {
       await expect(screen.getByTestId('location-denied')).toBeVisible();
 
       await screen.getByTestId('open-settings').tap();
-      // iOS keeps reading our app until the session switches to Settings, and a relaunch opens iOS Settings on its first page.
+      // iOS reads our app until the session switches; a relaunch also opens Settings on its first page.
       await device.openApp(SETTINGS_APP[platform], { relaunch: true });
       await agent.act('allow e2e Location to use your location while using the app');
 

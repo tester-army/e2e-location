@@ -1,6 +1,6 @@
 # e2e-location
 
-An Expo app with one Find me button that asks for location and shows the city you're in, used as an example of end-to-end testing the system's permission prompt, the device's location, going offline, and the Settings app, on iOS and Android, with [e2e](https://www.npmjs.com/package/e2e).
+An Expo app whose Find me button shows the city you're in, used as an example of end-to-end testing location with [e2e](https://www.npmjs.com/package/e2e): the permission prompt, the device's location, going offline, and the Settings app, on iOS and Android.
 
 <img src="docs/screenshot.png" alt="The app showing Paris, a dotted world map with a crosshair over Paris, and the permission, coordinates, and network" width="320">
 
@@ -8,11 +8,9 @@ An Expo app with one Find me button that asks for location and shows the city yo
 
 The app uses `expo-location` and the platform's own geocoder, so there are no accounts or keys:
 
-- **Find me** (`src/app/index.tsx`) asks for location only when tapped, then follows the device: the first update is where it is now, and every move over 1 km looks the city up again (`src/hooks/use-location.ts`).
+- **Find me** (`src/app/index.tsx`) asks for location only when tapped, then follows the device and looks the city up again after every move over 1 km (`src/hooks/use-location.ts`).
 - **The city** comes from `reverseGeocodeAsync`: Apple's geocoder on iOS, Google Play services' on Android. The lookup gets 10 seconds, since Android's never answers offline.
 - **Denied** explains why and offers Open Settings and Try again. A failed lookup keeps the coordinates and shows the error.
-
-The readout shows the permission, the coordinates, and the network, each with a test id. The world map is drawn from [Natural Earth](https://www.naturalearthdata.com)'s public domain land data.
 
 ### Places
 
@@ -37,9 +35,9 @@ This builds the app in Debug, installs it on the running simulator or emulator, 
 
 ## End-to-end tests
 
-The tests in `tests/location.e2e.ts` allow and deny the system prompt, move the device, go offline, and turn location back on in Settings. They set the device up with the `device` fixture: `device.setPermission` resets or grants location, `device.setLocation` moves the device, and `device.setAirplaneMode` takes Android offline (an iOS simulator shares the Mac's network, so that test runs on Android only). The prompt is tapped by its buttons, which waits for Android's dialog to finish sliding in, and the app's screen is checked by test id. The Settings app differs between iOS and Android, so there the test uses one `agent.act` step. The prompt and Settings aren't the app's own screens, so a failed location test runs up to two more times. `tests/home.e2e.ts` checks that a fresh launch asks for nothing.
+The tests in `tests/location.e2e.ts` allow and deny the system prompt, move the device, go offline, and turn location back on in Settings. The `device` fixture sets the scene: `device.setPermission` resets or grants location, `device.setLocation` moves the device, and `device.setAirplaneMode` takes Android offline (an iOS simulator shares the Mac's network, so that test is Android only). The prompt is tapped by its buttons, and the app is checked by test id. Settings differs between iOS and Android, so that test uses one `agent.act` step. A failed location test runs up to two more times, since the prompt and Settings aren't the app's own. `tests/home.e2e.ts` checks that a fresh launch asks for nothing.
 
-Only the Settings test needs a key: copy `.env.example` to `.env.local` and set `AI_GATEWAY_API_KEY`, as the agent model goes through the Vercel AI Gateway (or link a Vercel project). Without it, that test is skipped. When more than one simulator or emulator is booted, set `IOS_DEVICE` and `ANDROID_DEVICE` there too.
+Only the Settings test needs a key: copy `.env.example` to `.env.local` and set `AI_GATEWAY_API_KEY` for the agent model, which goes through the Vercel AI Gateway (or link a Vercel project). Without it, that test is skipped. With more than one simulator or emulator booted, also set `IOS_DEVICE` and `ANDROID_DEVICE`.
 
 With the app installed on the simulator or emulator, run:
 

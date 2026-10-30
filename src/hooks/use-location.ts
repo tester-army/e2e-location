@@ -8,8 +8,6 @@ LogBox.ignoreLogs(['Cannot connect to Expo CLI']);
 export type Fix = { latitude: number; longitude: number };
 export type Permission = 'unknown' | 'granted' | 'denied';
 
-const LOOKUP_FAILED = "Couldn't look up your city. Check your connection and try again.";
-
 // Without mayShowUserSettingsDialog, Android first asks to turn on Location Accuracy, and No thanks fails the fix.
 const WATCH_OPTIONS: Location.LocationOptions = {
   accuracy: Location.Accuracy.High,
@@ -41,7 +39,7 @@ export function useLocation() {
     } catch {
       if (lookup !== lookups.current) return;
       setCity(null);
-      setError(LOOKUP_FAILED);
+      setError("Couldn't look up your city. Check your connection and try again.");
     } finally {
       if (lookup === lookups.current) setBusy(false);
     }
