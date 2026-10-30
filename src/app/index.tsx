@@ -1,4 +1,5 @@
 import * as Linking from 'expo-linking';
+import { useNetworkState } from 'expo-network';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -13,6 +14,7 @@ const PERMISSION: Record<Permission, string> = { unknown: 'Not asked yet', grant
 
 export default function HomeScreen() {
   const { permission, fix, city, error, busy, find } = useLocation();
+  const { isConnected } = useNetworkState();
   const denied = permission === 'denied';
 
   return (
@@ -51,6 +53,11 @@ export default function HomeScreen() {
         <View>
           <Row label="Permission" value={PERMISSION[permission]} testID="permission" />
           <Row label="Coordinates" value={fix ? format(fix) : '—'} testID="coordinates" />
+          <Row
+            label="Network"
+            value={isConnected === undefined ? '—' : isConnected ? 'Online' : 'Offline'}
+            testID="network"
+          />
         </View>
       </View>
 
