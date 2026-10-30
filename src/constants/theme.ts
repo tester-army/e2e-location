@@ -10,7 +10,6 @@ export const colors = {
   textSoft: 'rgba(255, 255, 255, 0.9)',
   textSecondary: 'rgba(255, 255, 255, 0.7)',
   textFaint: 'rgba(255, 255, 255, 0.5)',
-  textGhost: 'rgba(255, 255, 255, 0.3)',
   buttonFill: '#f9f8f7',
   textOnLight: '#161616',
   outlineFill: 'rgba(22, 22, 22, 0.9)',

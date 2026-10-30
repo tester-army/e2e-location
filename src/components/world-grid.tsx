@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import { StyleSheet, View } from 'react-native';
 
-import { colors, type } from '@/constants/theme';
+import { colors } from '@/constants/theme';
 
 type Point = { latitude: number; longitude: number };
 
@@ -17,6 +18,7 @@ export function WorldGrid({ point, dimmed = false }: { point: Point | null; dimm
       style={[styles.grid, dimmed && styles.dimmed]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants">
+      <Image source={require('@/assets/images/world-dots.png')} style={styles.map} contentFit="fill" />
       {MERIDIANS.map((longitude) => (
         <View
           key={`m${longitude}`}
@@ -29,8 +31,6 @@ export function WorldGrid({ point, dimmed = false }: { point: Point | null; dimm
           style={[styles.parallel, latitude === 0 && styles.axis, { top: `${y(latitude)}%` }]}
         />
       ))}
-      <Text style={[type.labelXs, styles.corner, styles.topLeft]}>90°N 180°W</Text>
-      <Text style={[type.labelXs, styles.corner, styles.bottomRight]}>90°S 180°E</Text>
       {point ? (
         <View style={[styles.marker, { left: `${x(point.longitude)}%`, top: `${y(point.latitude)}%` }]}>
           <View style={[styles.tick, styles.tickVertical, { top: 0 }]} />
@@ -69,9 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.hairline,
   },
   axis: { backgroundColor: colors.hairlineStrong },
-  corner: { position: 'absolute', color: colors.textGhost },
-  topLeft: { top: 8, left: 10 },
-  bottomRight: { bottom: 8, right: 10 },
+  map: { ...StyleSheet.absoluteFill, opacity: 0.22 },
   marker: {
     position: 'absolute',
     width: MARKER,
