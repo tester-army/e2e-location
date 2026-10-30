@@ -1,7 +1,18 @@
 import { afterEach, describe, test } from '@e2e-dev/mobile';
 import { expect } from 'e2e';
 
-import { ALLOW, BERLIN, coordinates, DONT_ALLOW, LOCATION_PROMPT, nearDamSquare, PARIS } from './fixtures';
+import {
+  ALLOW,
+  BERLIN,
+  BUNDLE_ID,
+  coordinates,
+  DONT_ALLOW,
+  LOCATION_PROMPT,
+  nearDamSquare,
+  PARIS,
+  SETTINGS_APP,
+  skipAgent,
+} from './fixtures';
 
 // The system prompt isn't our screen, so these tests retry.
 describe('location', { retries: 2, timeout: 120_000 }, () => {
@@ -33,6 +44,36 @@ describe('location', { retries: 2, timeout: 120_000 }, () => {
     await expect(screen.getByTestId('open-settings')).toBeVisible();
     await expect(screen.getByTestId('city')).toBeHidden();
   });
+
+  test(
+    'turning location on in Settings brings the city back',
+    {
+      skip: skipAgent,
+      timeout: 180_000,
+      agentContext:
+        "e2e Location's location access is in the system Settings app. On iOS, scroll down to Apps, then e2e Location → Location (search doesn't list app settings). On Android: Apps → e2e Location → Permissions → Location.",
+    },
+    async ({ agent, app, device, platform, screen }) => {
+      await device.setPermission('location', 'reset');
+      await device.setLocation(PARIS);
+      await app.open();
+
+      await screen.getByTestId('find-me').tap();
+      await expect(screen.getByText(LOCATION_PROMPT)).toBeVisible();
+      await screen.getByRole('button', { name: DONT_ALLOW }).tap();
+      await expect(screen.getByTestId('location-denied')).toBeVisible();
+
+      await screen.getByTestId('open-settings').tap();
+      // iOS keeps reading our app until the session switches to Settings, and a relaunch opens iOS Settings on its first page.
+      await device.openApp(SETTINGS_APP[platform], { relaunch: true });
+      await agent.act('allow e2e Location to use your location while using the app');
+
+      await device.openApp(BUNDLE_ID);
+      await screen.getByTestId('find-me').tap();
+      await expect(screen.getByTestId('city')).toHaveText('Paris', { timeout: 15_000 });
+      await expect(screen.getByTestId('permission')).toHaveText('Allowed');
+    },
+  );
 
   test('moving updates the city without another tap', async ({ app, device, screen }) => {
     await device.setPermission('location', 'grant');
