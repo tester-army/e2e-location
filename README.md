@@ -1,56 +1,63 @@
-# Welcome to your Expo app 👋
+# e2e-location
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+An Expo app with one Find me button that asks for location and shows the city you're in, used as an example of end-to-end testing the system's permission prompt, the device's location, going offline, and the Settings app, on iOS and Android, with [e2e](https://www.npmjs.com/package/e2e).
 
-## Get started
+<img src="docs/screenshot.png" alt="The app showing Paris, a dotted world map with a crosshair over Paris, and the permission, coordinates, and network" width="320">
 
-1. Install dependencies
+## How it works
 
-   ```bash
-   npm install
-   ```
+The app uses `expo-location` and the platform's own geocoder, so there are no accounts or keys:
 
-2. Start the app
+- **Find me** (`src/app/index.tsx`) asks for location only when tapped, then follows the device: the first update is where it is now, and every move over 1 km looks the city up again (`src/hooks/use-location.ts`).
+- **The city** comes from `reverseGeocodeAsync`: Apple's geocoder on iOS, Google Play services' on Android. The lookup gets 10 seconds, since Android's never answers offline.
+- **Denied** explains why and offers Open Settings and Try again. A failed lookup keeps the coordinates and shows the error.
 
-   ```bash
-   npx expo start
-   ```
+The readout shows the permission, the coordinates, and the network, each with a test id. The world map is drawn from [Natural Earth](https://www.naturalearthdata.com)'s public domain land data.
 
-In the output, you'll find options to open the app in a
+### Places
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+| Place                                  | Coordinates      | City      |
+| -------------------------------------- | ---------------- | --------- |
+| Eiffel Tower                           | 48.8584, 2.2945  | Paris     |
+| Brandenburg Gate                       | 52.5163, 13.3777 | Berlin    |
+| Near Dam Square, a new point every run | 52.37…, 4.89…    | Amsterdam |
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+The tests set these with `device.setLocation`. By hand, use Device Hub → Device → Location on a simulator, or the emulator's extended controls.
 
-## Get a fresh project
+## Getting started
 
-When you're ready, run:
+Use Node 22.22.3+, 24.8+, or 26+, with Xcode and an iOS simulator, or the Android SDK and an emulator ([Expo's setup guide](https://docs.expo.dev/get-started/set-up-your-environment/)). Pick an Android image with Google Play or Google APIs: Android's geocoder comes with Google Play services.
 
 ```bash
-npm run reset-project
+npm install
+npm run ios       # or: npm run android
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+This builds the app in Debug, installs it on the running simulator or emulator, and starts Metro. Rebuild after native changes (`app.json`, packages with native code); JavaScript changes load from Metro.
 
-### Other setup steps
+## End-to-end tests
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+The tests in `tests/location.e2e.ts` allow and deny the system prompt, move the device, go offline, and turn location back on in Settings. They set the device up with the `device` fixture: `device.setPermission` resets or grants location, `device.setLocation` moves the device, and `device.setAirplaneMode` takes Android offline (an iOS simulator shares the Mac's network, so that test runs on Android only). The prompt is tapped by its buttons, which waits for Android's dialog to finish sliding in, and the app's screen is checked by test id. The Settings app differs between iOS and Android, so there the test uses one `agent.act` step. The prompt and Settings aren't the app's own screens, so a failed location test runs up to two more times. `tests/home.e2e.ts` checks that a fresh launch asks for nothing.
 
-## Learn more
+Only the Settings test needs a key: copy `.env.example` to `.env.local` and set `AI_GATEWAY_API_KEY`, as the agent model goes through the Vercel AI Gateway (or link a Vercel project). Without it, that test is skipped. When more than one simulator or emulator is booted, set `IOS_DEVICE` and `ANDROID_DEVICE` there too.
 
-To learn more about developing your project with Expo, look at the following resources:
+With the app installed on the simulator or emulator, run:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx e2e run --target ios
+npx e2e run --target android
+```
 
-## Join the community
+Without `--target`, both run. The runner starts Metro, or uses the one already running. Configuration lives in `e2e.config.ts`.
 
-Join our community of developers creating universal apps.
+## Scripts
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+| Command             | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `npm start`         | Start Metro                                        |
+| `npm run ios`       | Build and run the Debug app on an iOS simulator    |
+| `npm run android`   | Build and run the Debug app on an Android emulator |
+| `npm run lint`      | Run ESLint                                         |
+| `npm run typecheck` | Type-check with TypeScript                         |
+| `npm run format`    | Format with Prettier                               |
+| `npm run test:e2e`  | Run the e2e tests                                  |
