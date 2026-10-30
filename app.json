@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "e2e-location",
+    "name": "e2e Location",
     "slug": "e2e-location",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,9 +8,11 @@
     "scheme": "e2elocation",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "dev.e2e.location",
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "dev.e2e.location",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
