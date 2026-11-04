@@ -1,6 +1,6 @@
 # e2e-location
 
-An Expo app whose Find me button shows the city you're in, used as an example of end-to-end testing location with [e2e](https://www.npmjs.com/package/e2e): the permission prompt, the device's location, going offline, and the Settings app, on iOS and Android.
+An Expo app whose find me button shows the city you're in, used as an example of end-to-end testing location with [e2e](https://www.npmjs.com/package/e2e): the permission prompt, the device's location, going offline, and the Settings app, on iOS and Android.
 
 <img src="docs/screenshot.png" alt="The app showing Paris, a dotted world map with a crosshair over Paris, and the permission, coordinates, and network" width="320">
 
@@ -8,9 +8,9 @@ An Expo app whose Find me button shows the city you're in, used as an example of
 
 The app uses `expo-location` and the platform's own geocoder, so there are no accounts or keys:
 
-- **Find me** (`src/app/index.tsx`) asks for location only when tapped, then follows the device and looks the city up again after every move over 1 km (`src/hooks/use-location.ts`).
+- **find me** (`src/app/index.tsx`) asks for location only when tapped, then follows the device and looks the city up again after every move over 1 km (`src/hooks/use-location.ts`).
 - **The city** comes from `reverseGeocodeAsync`: Apple's geocoder on iOS, Google Play services' on Android. The lookup gets 10 seconds, since Android's never answers offline.
-- **Denied** explains why and offers Open Settings and Try again. A failed lookup keeps the coordinates and shows the error.
+- **Denied** explains why and offers open Settings and try again. A failed lookup keeps the coordinates and shows the error.
 
 ### Places
 

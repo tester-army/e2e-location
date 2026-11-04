@@ -18,7 +18,12 @@ export function WorldGrid({ point, dimmed = false }: { point: Point | null; dimm
       style={[styles.grid, dimmed && styles.dimmed]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants">
-      <Image source={require('@/assets/images/world-dots.png')} style={styles.map} contentFit="fill" />
+      <Image
+        source={require('@/assets/images/world-dots.png')}
+        style={styles.map}
+        contentFit="fill"
+        tintColor={colors.neutral700}
+      />
       {MERIDIANS.map((longitude) => (
         <View
           key={`m${longitude}`}
@@ -50,7 +55,7 @@ const styles = StyleSheet.create({
     aspectRatio: 2,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.hairlineStrong,
+    borderColor: colors.neutral800,
     backgroundColor: colors.panel,
   },
   dimmed: { opacity: 0.4 },
@@ -59,17 +64,17 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: StyleSheet.hairlineWidth,
-    backgroundColor: colors.hairline,
+    backgroundColor: colors.neutral800,
   },
   parallel: {
     position: 'absolute',
     left: 0,
     right: 0,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.hairline,
+    backgroundColor: colors.neutral800,
   },
-  axis: { backgroundColor: colors.hairlineStrong },
-  map: { ...StyleSheet.absoluteFill, opacity: 0.22 },
+  axis: { backgroundColor: colors.neutral700 },
+  map: StyleSheet.absoluteFill,
   marker: {
     position: 'absolute',
     width: MARKER,
@@ -79,9 +84,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ring: { width: 12, height: 12, borderRadius: 6, borderWidth: 1, borderColor: colors.textBright },
-  dot: { position: 'absolute', width: 4, height: 4, backgroundColor: colors.accentOrange },
-  tick: { position: 'absolute', backgroundColor: colors.textBright },
+  ring: { width: 12, height: 12, borderWidth: 1, borderColor: colors.offWhite },
+  dot: { position: 'absolute', width: 4, height: 4, backgroundColor: colors.green },
+  tick: { position: 'absolute', backgroundColor: colors.offWhite },
   tickVertical: { width: 1, height: 4, left: MARKER / 2 - 0.5 },
   tickHorizontal: { height: 1, width: 4, top: MARKER / 2 - 0.5 },
 });

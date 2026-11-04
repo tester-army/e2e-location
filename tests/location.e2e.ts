@@ -27,7 +27,7 @@ describe('location', { retries: 2, timeout: 120_000 }, () => {
 
     await expect(screen.getByTestId('city')).toHaveText('Paris', { timeout: 15_000 });
     await expect(screen.getByTestId('coordinates')).toHaveText(coordinates(PARIS));
-    await expect(screen.getByTestId('permission')).toHaveText('Allowed');
+    await expect(screen.getByTestId('permission')).toHaveText('allowed');
   });
 
   test('denying explains why and offers Settings', async ({ app, device, screen }) => {
@@ -40,7 +40,7 @@ describe('location', { retries: 2, timeout: 120_000 }, () => {
     await screen.getByRole('button', { name: DONT_ALLOW }).tap();
 
     await expect(screen.getByTestId('location-denied')).toBeVisible();
-    await expect(screen.getByTestId('permission')).toHaveText('Denied');
+    await expect(screen.getByTestId('permission')).toHaveText('denied');
     await expect(screen.getByTestId('open-settings')).toBeVisible();
     await expect(screen.getByTestId('city')).toBeHidden();
   });
@@ -51,7 +51,7 @@ describe('location', { retries: 2, timeout: 120_000 }, () => {
       skip: skipAgent,
       timeout: 180_000,
       agentContext:
-        "e2e Location's location access is in the system Settings app. On iOS, scroll down to Apps, then e2e Location → Location (search doesn't list app settings). On Android: Apps → e2e Location → Permissions → Location.",
+        "e2e location's location access is in the system Settings app. On iOS, scroll down to Apps, then e2e location → Location (search doesn't list app settings). On Android: Apps → e2e location → Permissions → Location.",
     },
     async ({ agent, app, device, platform, screen }) => {
       await device.setPermission('location', 'reset');
@@ -66,12 +66,12 @@ describe('location', { retries: 2, timeout: 120_000 }, () => {
       await screen.getByTestId('open-settings').tap();
       // iOS reads our app until the session switches; a relaunch also opens Settings on its first page.
       await device.openApp(SETTINGS_APP[platform], { relaunch: true });
-      await agent.act('allow e2e Location to use your location while using the app');
+      await agent.act('allow e2e location to use your location while using the app');
 
       await device.openApp(BUNDLE_ID);
       await screen.getByTestId('find-me').tap();
       await expect(screen.getByTestId('city')).toHaveText('Paris', { timeout: 15_000 });
-      await expect(screen.getByTestId('permission')).toHaveText('Allowed');
+      await expect(screen.getByTestId('permission')).toHaveText('allowed');
     },
   );
 
@@ -101,13 +101,13 @@ describe('location', { retries: 2, timeout: 120_000 }, () => {
       await app.open();
 
       await device.setAirplaneMode(true);
-      await expect(screen.getByTestId('network')).toHaveText('Offline');
+      await expect(screen.getByTestId('network')).toHaveText('offline');
       await screen.getByTestId('find-me').tap();
       await expect(screen.getByTestId('coordinates')).toHaveText(coordinates(amsterdam), { timeout: 15_000 });
       await expect(screen.getByTestId('location-error')).toBeVisible({ timeout: 20_000 });
 
       await device.setAirplaneMode(false);
-      await expect(screen.getByTestId('network')).toHaveText('Online', { timeout: 15_000 });
+      await expect(screen.getByTestId('network')).toHaveText('online', { timeout: 15_000 });
       await screen.getByTestId('find-me').tap();
       await expect(screen.getByTestId('city')).toHaveText('Amsterdam', { timeout: 15_000 });
     });

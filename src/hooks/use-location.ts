@@ -35,11 +35,11 @@ export function useLocation() {
       if (lookup !== lookups.current) return;
       const name = address?.city ?? address?.subregion ?? address?.region;
       setCity(name ?? null);
-      setError(name ? null : "There's no city at this spot.");
+      setError(name ? null : "there's no city at this spot.");
     } catch {
       if (lookup !== lookups.current) return;
       setCity(null);
-      setError("Couldn't look up your city. Check your connection and try again.");
+      setError("couldn't look up your city. check your connection and try again.");
     } finally {
       if (lookup === lookups.current) setBusy(false);
     }
@@ -63,12 +63,12 @@ export function useLocation() {
         WATCH_OPTIONS,
         ({ coords }) => lookUp(coords),
         (reason) => {
-          setError(`Couldn't get your location: ${reason}`);
+          setError(`couldn't get your location: ${reason}`);
           setBusy(false);
         },
       );
     } catch (e) {
-      setError(`Couldn't get your location: ${e instanceof Error ? e.message : String(e)}`);
+      setError(`couldn't get your location: ${e instanceof Error ? e.message : String(e)}`);
       setBusy(false);
     }
   }

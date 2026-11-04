@@ -3,8 +3,8 @@ export const SETTINGS_APP: Record<string, string> = { ios: 'com.apple.Preference
 
 export const skipAgent = process.env.AI_GATEWAY_API_KEY ? false : 'set AI_GATEWAY_API_KEY to run the agent test';
 
-// iOS: Allow “e2e Location” to use your location? Android: Allow e2e Location to access this device’s location?
-export const LOCATION_PROMPT = /^Allow .?e2e Location.? to (use your|access this device.s) location\?$/;
+// iOS: Allow “e2e location” to use your location? Android: Allow e2e location to access this device’s location?
+export const LOCATION_PROMPT = /^Allow .?e2e location.? to (use your|access this device.s) location\?$/;
 export const ALLOW = /^(Allow While Using App|While using the app)$/;
 export const DONT_ALLOW = /^Don.t allow$/i;
 
