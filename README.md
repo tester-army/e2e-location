@@ -59,3 +59,10 @@ Without `--target`, both run. The runner starts Metro, or uses the one already r
 | `npm run typecheck` | Type-check with TypeScript                         |
 | `npm run format`    | Format with Prettier                               |
 | `npm run test:e2e`  | Run the e2e tests                                  |
+
+<a href="https://e2e.com">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/e2e-logo-white.png">
+    <img src="docs/e2e-logo-black.png" alt="e2e" width="160">
+  </picture>
+</a>
